@@ -32,6 +32,9 @@ public class StackManager : MonoBehaviour
     public Color32[] stackColors = new Color32[4];
     public Material stackMat;
 
+    // UI
+    public GameObject canvas;
+
 	void Start() 
     {
         stack = new GameObject[transform.childCount];
@@ -40,11 +43,12 @@ public class StackManager : MonoBehaviour
             stack[i] = transform.GetChild(i).gameObject;
             ColorsUtil.ColorMesh(stack[i].GetComponent<MeshFilter>().mesh, i);
         }
+        canvas.SetActive(false);
 	}
 	
 	void Update() 
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown && !endGame)
         {
             if (PlaceTile())
             {
@@ -191,9 +195,9 @@ public class StackManager : MonoBehaviour
 
     private void EndGame()
     {
-        //endGame = true;
+        endGame = true;
         stack[stackIndex].AddComponent<Rigidbody>();
-        Application.LoadLevel("main_menu");
+        canvas.SetActive(true);
     }
 
     private void CreateCube(Vector3 position, Vector3 scale)
@@ -205,5 +209,15 @@ public class StackManager : MonoBehaviour
         ColorsUtil.ColorMesh(cube.GetComponent<MeshFilter>().mesh, scoreCount);
         cube.AddComponent<Rigidbody>();
         cube.AddComponent("TrashCubePart");
+    }
+
+    public void RestartGame()
+    {
+        Application.LoadLevel(Application.loadedLevel);
+    }
+
+    public void BackToMainMenu()
+    {
+        Application.LoadLevel("main_menu");
     }
 }
