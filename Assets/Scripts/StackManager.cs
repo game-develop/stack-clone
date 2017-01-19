@@ -38,7 +38,7 @@ public class StackManager : MonoBehaviour
         for (int i = 0; i < transform.childCount; ++i)
         {
             stack[i] = transform.GetChild(i).gameObject;
-            ColorMesh(stack[i].GetComponent<MeshFilter>().mesh);
+            ColorsUtil.ColorMesh(stack[i].GetComponent<MeshFilter>().mesh, i);
         }
 	}
 	
@@ -76,7 +76,7 @@ public class StackManager : MonoBehaviour
 
         desiredPosition = Vector3.down * scoreCount;
 
-        ColorMesh(stack[stackIndex].GetComponent<MeshFilter>().mesh);
+        ColorsUtil.ColorMesh(stack[stackIndex].GetComponent<MeshFilter>().mesh, scoreCount);
     }
 
     private void MoveTile()
@@ -191,8 +191,9 @@ public class StackManager : MonoBehaviour
 
     private void EndGame()
     {
-        endGame = true;
+        //endGame = true;
         stack[stackIndex].AddComponent<Rigidbody>();
+        Application.LoadLevel("main_menu");
     }
 
     private void CreateCube(Vector3 position, Vector3 scale)
@@ -201,35 +202,8 @@ public class StackManager : MonoBehaviour
         cube.transform.localScale = scale;
         cube.transform.localPosition = position;
         cube.GetComponent<MeshRenderer>().material = stackMat;
-        ColorMesh(cube.GetComponent<MeshFilter>().mesh);
+        ColorsUtil.ColorMesh(cube.GetComponent<MeshFilter>().mesh, scoreCount);
         cube.AddComponent<Rigidbody>();
         cube.AddComponent("TrashCubePart");
-    }
-
-    private Color32 Lerp4(Color32 a, Color32 b, Color32 c, Color32 d, float f)
-    {
-        if (f < 0.33f)
-        {
-            return Color.Lerp(a, b, f / 0.33f);
-        }
-
-        if (f < 0.66f)
-        {
-            return Color.Lerp(b, c, (f - 0.33f) / 0.33f);
-        }
-
-        return Color.Lerp(c, d, (f - 0.66f) / 0.33f);
-    }
-
-    private void ColorMesh(Mesh mesh)
-    {
-        Color32[] colors = new Color32[mesh.vertices.Length];
-
-        float f = Mathf.Sin(scoreCount * 0.05f);
-        for (int i = 0; i < colors.Length; ++i)
-        {
-            colors[i] = Lerp4(stackColors[0], stackColors[1], stackColors[2], stackColors[3], f);
-        }
-        mesh.colors32 = colors;
     }
 }
