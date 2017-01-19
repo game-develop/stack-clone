@@ -33,5 +33,10 @@ public class MainMenuStack : MonoBehaviour
             upperCube.transform.localPosition.y, 
             upperCube.transform.localPosition.z
         );
+        Color32[] colors = upperCube.GetComponent<MeshFilter>().mesh.colors32;
+        for (int i = 0; i < colors.Length; ++i)
+        {
+            Debug.Log(colors[i]);
+        }
 	}
 }

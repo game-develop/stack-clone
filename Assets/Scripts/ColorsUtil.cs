@@ -13,11 +13,10 @@ public class ColorsUtil {
     public static void ColorMesh(Mesh mesh, int number)
     {
         Color32[] colors = new Color32[mesh.vertices.Length];
-        float f = Mathf.Sin(number * 0.05f);
+        float f = Mathf.Abs(Mathf.Sin(number * 0.05f));
         for (int i = 0; i < colors.Length; ++i)
         {
             colors[i] = Lerp4(stackColors[0], stackColors[1], stackColors[2], stackColors[3], f);
-            Debug.Log(colors[i]);
         }
         mesh.colors32 = colors;
     }
