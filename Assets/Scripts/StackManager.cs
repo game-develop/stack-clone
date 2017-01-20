@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class StackManager : MonoBehaviour 
@@ -13,6 +14,7 @@ public class StackManager : MonoBehaviour
     public GameObject[] stack;
     private int stackIndex;
     private int scoreCount = 0;
+    private int stackPosition = 0;
 
     // camera
     private Vector3 desiredPosition;
@@ -34,6 +36,8 @@ public class StackManager : MonoBehaviour
 
     // UI
     public GameObject canvas;
+    public Text scoreText;
+    public Text endGameText;
 
 	void Start() 
     {
@@ -53,7 +57,7 @@ public class StackManager : MonoBehaviour
             if (PlaceTile())
             {
                 SpawnTile();
-                ++scoreCount;
+                ++stackPosition;
                 flag = !flag;
             }
             else
@@ -63,6 +67,7 @@ public class StackManager : MonoBehaviour
         }
 
         MoveTile();
+        scoreText.text = "score: " + scoreCount;
 
         transform.position = Vector3.Lerp(transform.position, desiredPosition, stackMovingSpeed * Time.deltaTime);
 	}
@@ -75,12 +80,12 @@ public class StackManager : MonoBehaviour
         {
             stackIndex = transform.childCount - 1;
         }
-        stack[stackIndex].transform.localPosition = new Vector3(0, scoreCount, 0);
+        stack[stackIndex].transform.localPosition = new Vector3(0, stackPosition, 0);
         stack[stackIndex].transform.localScale = new Vector3(currentBounds.x, 1, currentBounds.y);
 
-        desiredPosition = Vector3.down * scoreCount;
+        desiredPosition = Vector3.down * stackPosition;
 
-        ColorsUtil.ColorMesh(stack[stackIndex].GetComponent<MeshFilter>().mesh, scoreCount);
+        ColorsUtil.ColorMesh(stack[stackIndex].GetComponent<MeshFilter>().mesh, stackPosition);
     }
 
     private void MoveTile()
@@ -91,11 +96,11 @@ public class StackManager : MonoBehaviour
         tileTransition += Time.deltaTime * tileSpeed;
         if (flag)
         {
-            stack[stackIndex].transform.localPosition = new Vector3(Mathf.Sin(tileTransition) * MAX_BOUND, scoreCount, secondaryPosition);
+            stack[stackIndex].transform.localPosition = new Vector3(Mathf.Sin(tileTransition) * MAX_BOUND, stackPosition, secondaryPosition);
         }
         else
         {
-            stack[stackIndex].transform.localPosition = new Vector3(secondaryPosition, scoreCount, Mathf.Sin(tileTransition) * MAX_BOUND);
+            stack[stackIndex].transform.localPosition = new Vector3(secondaryPosition, stackPosition, Mathf.Sin(tileTransition) * MAX_BOUND);
         }
 
     }
@@ -126,7 +131,8 @@ public class StackManager : MonoBehaviour
                             , current.position.z)
                         , new Vector3(Mathf.Abs(deltaX), 1, current.localScale.z)
                 );
-                current.localPosition = new Vector3(middle - lastTilePosition.x/2, scoreCount, lastTilePosition.z);
+                current.localPosition = new Vector3(middle - lastTilePosition.x / 2, stackPosition, lastTilePosition.z);
+                ++scoreCount;
             }
             else
             {
@@ -139,10 +145,11 @@ public class StackManager : MonoBehaviour
                     }
                     float middle = lastTilePosition.x + current.localPosition.x / 2;
                     current.localScale = new Vector3(currentBounds.x, 1, currentBounds.y);
-                    current.localPosition = new Vector3(middle - lastTilePosition.x / 2, scoreCount, lastTilePosition.z);
+                    current.localPosition = new Vector3(middle - lastTilePosition.x / 2, stackPosition, lastTilePosition.z);
                 }
                 ++combo;
-                current.localPosition = new Vector3(lastTilePosition.x, scoreCount, lastTilePosition.z);
+                current.localPosition = new Vector3(lastTilePosition.x, stackPosition, lastTilePosition.z);
+                scoreCount += (int)combo;
             }
         }   
         else
@@ -168,7 +175,8 @@ public class StackManager : MonoBehaviour
                             : current.position.z - current.localScale.z / 2)
                         , new Vector3(current.localScale.x, 1, Mathf.Abs(deltaZ))
                 );
-                current.localPosition = new Vector3(lastTilePosition.x, scoreCount, middle - lastTilePosition.z / 2);
+                current.localPosition = new Vector3(lastTilePosition.x, stackPosition, middle - lastTilePosition.z / 2);
+                ++scoreCount;
             }
             else
             {
@@ -181,10 +189,11 @@ public class StackManager : MonoBehaviour
                     }
                     float middle = lastTilePosition.z + current.localPosition.z / 2;
                     current.localScale = new Vector3(currentBounds.x, 1, currentBounds.y);
-                    current.localPosition = new Vector3(lastTilePosition.x, scoreCount, middle - lastTilePosition.z / 2);
+                    current.localPosition = new Vector3(lastTilePosition.x, stackPosition, middle - lastTilePosition.z / 2);
                 }
                 ++combo;
-                current.localPosition = new Vector3(lastTilePosition.x, scoreCount, lastTilePosition.z);
+                current.localPosition = new Vector3(lastTilePosition.x, stackPosition, lastTilePosition.z);
+                scoreCount += (int)combo;
             }
         }
 
@@ -198,6 +207,7 @@ public class StackManager : MonoBehaviour
         endGame = true;
         stack[stackIndex].AddComponent<Rigidbody>();
         canvas.SetActive(true);
+        endGameText.text = "You lose. you collect " + scoreCount + " points";
     }
 
     private void CreateCube(Vector3 position, Vector3 scale)
@@ -206,7 +216,7 @@ public class StackManager : MonoBehaviour
         cube.transform.localScale = scale;
         cube.transform.localPosition = position;
         cube.GetComponent<MeshRenderer>().material = stackMat;
-        ColorsUtil.ColorMesh(cube.GetComponent<MeshFilter>().mesh, scoreCount);
+        ColorsUtil.ColorMesh(cube.GetComponent<MeshFilter>().mesh, stackPosition);
         cube.AddComponent<Rigidbody>();
         cube.AddComponent("TrashCubePart");
     }
