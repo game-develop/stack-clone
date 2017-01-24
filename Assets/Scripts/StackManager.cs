@@ -38,6 +38,7 @@ public class StackManager : MonoBehaviour
     public GameObject canvas;
     public Text scoreText;
     public Text endGameText;
+    public GameObject hudCanvas;
 
 	void Start() 
     {
@@ -48,6 +49,7 @@ public class StackManager : MonoBehaviour
             ColorsUtil.ColorMesh(stack[i].GetComponent<MeshFilter>().mesh, i);
         }
         canvas.SetActive(false);
+        hudCanvas.SetActive(true);
 	}
 	
 	void Update() 
@@ -207,7 +209,7 @@ public class StackManager : MonoBehaviour
         endGame = true;
         stack[stackIndex].AddComponent<Rigidbody>();
         canvas.SetActive(true);
-        endGameText.text = "You lose. you collect " + scoreCount + " points";
+        endGameText.text = "You lose";
     }
 
     private void CreateCube(Vector3 position, Vector3 scale)
