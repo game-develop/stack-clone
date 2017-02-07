@@ -134,7 +134,6 @@ public class StackManager : MonoBehaviour
                         , new Vector3(Mathf.Abs(deltaX), 1, current.localScale.z)
                 );
                 current.localPosition = new Vector3(middle - lastTilePosition.x / 2, stackPosition, lastTilePosition.z);
-                ++scoreCount;
             }
             else
             {
@@ -151,7 +150,6 @@ public class StackManager : MonoBehaviour
                 }
                 ++combo;
                 current.localPosition = new Vector3(lastTilePosition.x, stackPosition, lastTilePosition.z);
-                scoreCount += (int)combo;
             }
         }   
         else
@@ -178,7 +176,6 @@ public class StackManager : MonoBehaviour
                         , new Vector3(current.localScale.x, 1, Mathf.Abs(deltaZ))
                 );
                 current.localPosition = new Vector3(lastTilePosition.x, stackPosition, middle - lastTilePosition.z / 2);
-                ++scoreCount;
             }
             else
             {
@@ -195,11 +192,11 @@ public class StackManager : MonoBehaviour
                 }
                 ++combo;
                 current.localPosition = new Vector3(lastTilePosition.x, stackPosition, lastTilePosition.z);
-                scoreCount += (int)combo;
             }
         }
 
         secondaryPosition = flag ? current.localPosition.x : current.localPosition.z;
+        ++scoreCount;
 
         return true;
     }
