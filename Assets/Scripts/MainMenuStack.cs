@@ -10,18 +10,15 @@ public class MainMenuStack : MonoBehaviour
     private float tileSpeed = 1.5f;
     private float startXPosition;
     private GameObject upperCube;
-
-    public GameObject[] stack;
     
 	void Start() 
     {
-        stack = new GameObject[transform.childCount];
         for (int i = 0; i < transform.childCount; ++i)
         {
-            stack[i] = transform.GetChild(i).gameObject;
-            ColorsUtil.ColorMesh(stack[i].GetComponent<MeshFilter>().mesh, i);
+            GameObject o = transform.GetChild(i).gameObject;
+            ColorsUtil.ColorMesh(o.GetComponent<MeshFilter>().mesh, i);
         }
-        upperCube = stack[0];
+        upperCube = transform.GetChild(0).gameObject;
         startXPosition = upperCube.transform.localPosition.x;
 	}
 	
